@@ -1,0 +1,79 @@
+/* Halden — grey stage inside a bezel frame. Desktop 1440×900 only. */
+html, body { overflow-x: clip; background: #2A2B2F; }
+body { padding: 12px; }
+body.grain::after { display: none; }
+
+.stage {
+  position: relative; overflow: hidden; isolation: isolate;
+  height: calc(100vh - 24px); min-height: 640px; margin-bottom: 12px;
+  border-radius: 28px;
+  background: linear-gradient(in oklch 180deg, #B9BBC1, #8E9096);
+  color: var(--text);
+}
+.slot { position: absolute; inset: 0; z-index: 0; }
+.slot img { width: 100%; height: 100%; object-fit: cover; }
+.corner { position: absolute; z-index: 5; font-size: 13px; line-height: 1.45; color: var(--text); }
+.corner.tl { top: 84px; left: 32px; } .corner.tr { top: 84px; right: 32px; text-align: right; } .corner.tl.title { top: 108px; }
+.corner.bl { bottom: 28px; left: 32px; } .corner.br { bottom: 28px; right: 32px; text-align: right; }
+.small-note { font-size: 13px; color: var(--muted); max-width: 240px; text-wrap: pretty; }
+
+.u-link { position: relative; font-size: 13px; font-weight: 500; }
+.u-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform .35s; }
+.u-link:hover::after { transform: scaleX(1); }
+
+.pill { display: inline-block; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); font-size: 13px; font-weight: 500; transition: background .3s, color .3s; background: rgba(255,255,255,.28); }
+.pill:hover { background: var(--accent); color: #fff; }
+.btn-ind { display: inline-block; padding: 12px 22px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; }
+
+.glass { background: rgba(255,255,255,.42); border: 1px solid rgba(255,255,255,.55); border-radius: 18px; backdrop-filter: blur(10px); }
+.layer-row { display: flex; gap: 14px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 14px; transition: opacity .3s; }
+.layer-rows:hover .layer-row { opacity: .4; } .layer-rows .layer-row:hover { opacity: 1; color: var(--accent); }
+.chip-spec { padding: 12px 18px; border-radius: 14px; background: rgba(255,255,255,.88); }
+.tile { padding: 22px 26px; border-radius: 20px; background: rgba(255,255,255,.88); transition: transform .35s; }
+.tile:hover { transform: translateY(-6px); }
+.model-card { padding: 14px 18px; border-radius: 22px; background: rgba(255,255,255,.5); border: 1px solid rgba(255,255,255,.6); }
+.model-card li { padding: 4px 0; border-top: 1px solid var(--line); font-size: 13px; transition: color .25s; }
+.model-card li:hover { color: var(--accent); }
+.swatch { width: 28px; height: 28px; border-radius: 999px; border: 2px solid transparent; outline: 1px solid rgba(16,17,20,.3); outline-offset: 3px; transition: outline-offset .3s; }
+.swatch:hover, .swatch[aria-pressed="true"] { outline-offset: 5px; outline-color: var(--accent); }
+
+.on-dark, .on-dark .corner { color: #fff; }
+.on-dark .small-note { color: rgba(255,255,255,.8); }
+.on-dark .chip-spec, .on-dark .tile { color: var(--text); }
+/* Display & battery: two panels cross-fade into one continuous stage (no seam). */
+.dp-half { position: absolute; top: 0; bottom: 0; width: 62%; transform: translateY(4%);
+  -webkit-mask-composite: source-in; mask-composite: intersect; }
+.dp-left { left: 0; -webkit-mask-image: linear-gradient(90deg,#000 62%,transparent), linear-gradient(180deg,transparent,#000 14%,#000 88%,transparent); mask-image: linear-gradient(90deg,#000 62%,transparent), linear-gradient(180deg,transparent,#000 14%,#000 88%,transparent); }
+.dp-right { right: 0; -webkit-mask-image: linear-gradient(90deg,transparent,#000 38%), linear-gradient(180deg,transparent,#000 14%,#000 88%,transparent); mask-image: linear-gradient(90deg,transparent,#000 38%), linear-gradient(180deg,transparent,#000 14%,#000 88%,transparent); }
+
+/* ONE film: a single tall section + a sticky full-screen bezel stage; every section is a label + cards that only fade (--o). */
+.film { position: relative; height: calc(100vh + var(--run)); }
+.film > .stage { position: sticky; top: 12px; margin-bottom: 0; }
+.film-static { position: relative; }
+.sec { position: absolute; inset: 0; pointer-events: none; }
+.sec > * { opacity: var(--o, 1); }
+.sec a, .sec button, .sec .frost { pointer-events: auto; }
+.frost { background: rgba(244,245,247,.8); border: 1px solid rgba(255,255,255,.75); backdrop-filter: blur(18px) saturate(1.15); -webkit-backdrop-filter: blur(18px) saturate(1.15); color: var(--text); }
+.frost .text-muted { color: #3a3c43; }
+.label { position: absolute; z-index: 5; top: 84px; left: 32px; padding: 8px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; letter-spacing: .02em; line-height: 1.2;
+  background: rgba(244,245,247,.8); border: 1px solid rgba(255,255,255,.75); backdrop-filter: blur(18px) saturate(1.15); -webkit-backdrop-filter: blur(18px) saturate(1.15); color: var(--text); }
+.pill { background: rgba(244,245,247,.78); backdrop-filter: blur(14px); }
+:where(.frost) { border-radius: 18px; }
+.frost.rounded-full { border-radius: 999px; }
+
+/* HALDEN word + phone cut-out sit inside the film layer: film frame < word < cut-out (Round 2d) */
+.behind { position: absolute; inset: 0; pointer-events: none; }
+.behind .hw { position: absolute; top: 96px; left: 0; right: 0; z-index: 1; text-align: center; font-size: 300px; font-weight: 800; line-height: 1; letter-spacing: -0.04em; color: #7b7d84; mix-blend-mode: multiply; opacity: calc(var(--w, 1) * var(--wi, 1)); }
+.behind .hc { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; object-fit: cover; opacity: calc(var(--w, 1) * var(--wi, 1)); }
+
+/* loader: film-grey screen, small wordmark, thin growing line + percent (nothing else moves) */
+.ld { position: fixed; inset: 0; z-index: 100; background: #b1b4ba; display: flex; align-items: center; justify-content: center; }
+.ld-in { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.ld-word { font-size: 14px; font-weight: 800; letter-spacing: 0.42em; padding-left: 0.42em; color: #101114; }
+.ld-line { width: 220px; height: 1px; background: rgba(16, 17, 20, 0.22); }
+.ld-bar { height: 100%; background: #101114; transform-origin: left; transform: scaleX(0); }
+.ld-pct { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: #3a3c43; }
+
+/* footer: the same word behind the slate cut-out, faded in together at the very end (Round 2e) */
+.behind .fw { position: absolute; bottom: 72px; left: 0; right: 0; z-index: 1; text-align: center; font-size: 300px; font-weight: 800; line-height: 1; letter-spacing: -0.04em; color: #7b7d84; mix-blend-mode: multiply; opacity: var(--f, 1); }
+.behind .fc { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; object-fit: cover; opacity: var(--f, 1); }
